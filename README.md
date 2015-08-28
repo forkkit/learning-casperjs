@@ -45,12 +45,14 @@ PhantomJS | PhantomJS
 
 ## 参考资料
 
-- [CasperJS文档][4]
-- [PhantomJS文档][5]
+- CasperJS [文档][4] [视频][5]
+- PhantomJS [文档][6] [视频][7]
 
 [1]: http://casperjs.org/
 [2]: http://phantomjs.org/
 [3]: http://slimerjs.org/
 [4]: http://docs.casperjs.org/en/latest/index.html
-[5]: http://phantomjs.org/documentation/
+[5]: https://www.youtube.com/watch?v=Kefil5tCL9o
+[6]: http://phantomjs.org/documentation/
+[7]: https://www.youtube.com/watch?v=OqEcn_6GBDI
 
