@@ -19,6 +19,7 @@ $ phantomjs --version
 $ wget https://github.com/n1k0/casperjs/archive/master.zip -O casperjs-master.zip
 $ unzip casperjs-master.zip
 $ mv casperjs-master /usr/local/lib/casperjs
+$ sed -i '/Warning PhantomJS v2.0 not yet released/s@^@//@' /usr/local/lib/casperjs/bin/bootstrap.js
 $ ln -s /usr/local/lib/casperjs/bin/casperjs /usr/local/bin/
 $ casperjs --version
 1.1.0-beta3
