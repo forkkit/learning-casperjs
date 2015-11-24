@@ -7,22 +7,55 @@
 
 操作系统: `Ubuntu 14.04.1 LTS`
 
-```bash
-# 安装 phantomjs (2.0.0)
-$ wget https://github.com/vimagick/dockerfiles/raw/master/webkit/bin/phantomjs
-$ strip phantomjs
-$ mv phantomjs /usr/local/bin/
-$ phantomjs --version
-2.0.0
+```yaml
+---
 
-# 安装 casperjs (latest)
-$ wget https://github.com/n1k0/casperjs/archive/master.zip -O casperjs-master.zip
-$ unzip casperjs-master.zip
-$ mv casperjs-master /usr/local/lib/casperjs
-$ sed -i '/Warning PhantomJS v2.0 not yet released/s@^@//@' /usr/local/lib/casperjs/bin/bootstrap.js
-$ ln -s /usr/local/lib/casperjs/bin/casperjs /usr/local/bin/
-$ casperjs --version
-1.1.0-beta3
+- name: install phantomjs and casperjs
+
+  hosts: vps
+
+  tasks:
+  - name: 'download phantomjs'
+    get_url:
+      url: https://github.com/vimagick/dockerfiles/raw/master/webkit/bin/phantomjs
+      dest: /usr/local/bin/phantomjs
+      sha256sum: '2110217cf1e2979fa49db82c2e9e7e7f7c787dfa1b885b342804c7958d613461'
+      mode: 0755
+
+  - name: 'create directory'
+    file:
+      dest: /usr/local/casperjs
+      state: directory
+      mode: 0755
+
+  - name: 'download casperjs'
+    get_url:
+      url: https://github.com/n1k0/casperjs/archive/master.tar.gz
+      dest: /tmp
+      force: yes
+
+  - name: 'unarchive casperjs'
+    command: tar xzf /tmp/casperjs-master.tar.gz --strip 1
+    args:
+      chdir: /usr/local/casperjs
+
+  - name: 'patch casperjs'
+    command: sed -i '/Warning PhantomJS v2.0 not yet released/s@^@//@' bootstrap.js
+    args:
+      chdir: /usr/local/casperjs/bin
+
+  - name: 'link casperjs'
+    file:
+      src: /usr/local/casperjs/bin/casperjs
+      dest: /usr/local/bin/casperjs
+      state: link
+
+  - name: 'get version'
+    shell: phantomjs --version && casperjs --version
+    register: result
+
+  - name: 'show version'
+    debug: msg="{{ result.stdout_lines }}"
 ```
 
 ## 快速入门
