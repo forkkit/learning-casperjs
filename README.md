@@ -6,7 +6,8 @@
 
 ## 安装软件
 
-操作系统: `Ubuntu 14.04.1 LTS`
+- It works on Ubuntu 14.04 LTS out-of-box.
+- Debian 8 needs `/usr/lib/x86_64-linux-gnu/libjpeg.so.8` to run properly.
 
 ```yaml
 ---
@@ -22,6 +23,13 @@
       dest: /usr/local/bin/phantomjs
       sha256sum: '3846b7ea251f8a239e9b8727f05a7c65054ae45997ab06ee29ab7f333d4fda7a'
       mode: 0755
+
+  - name: 'download libjpeg'
+    get_url:
+      url: https://github.com/vimagick/learning-casperjs/raw/master/lib/libjpeg.so.8
+      dest: /usr/lib/x86_64-linux-gnu/libjpeg.so.8
+      sha256sum: 'b9de29dab0f1585d1a49b557e88bf3842d84f3115f90cc2c0a370cbcb9058e16'
+      mode: 0644
 
   - name: 'create directory'
     file:
@@ -61,6 +69,15 @@
 
 > Official phantomjs binary can be download at <https://bitbucket.org/ariya/phantomjs/downloads>.
 
+```bash
+# VPS-IP: 1.2.3.4
+$ echo -e 'host vps\n  hostname 1.2.3.4\n  user root' >> ~/.ssh/config
+$ ssh-copy-id vps
+$ pip install ansible
+$ echo -e '[vps]\n1.2.3.4' >> /etc/ansible/hosts
+$ ansible-playbook phantomjs.yml
+```
+
 ## 快速入门
 
 ```bash
@@ -82,8 +99,8 @@ PhantomJS | PhantomJS
 
 ## 参考资料
 
-- CasperJS [文档][4] [视频][5]
-- PhantomJS [文档][6] [视频][7]
+- CasperJS: [文档][4] | [视频][5]
+- PhantomJS: [文档][6] | [视频][7]
 
 [1]: http://casperjs.org/
 [2]: http://phantomjs.org/
