@@ -20,7 +20,7 @@
     get_url:
       url: https://github.com/vimagick/learning-casperjs/raw/master/bin/phantomjs-2.0.1
       dest: /usr/local/bin/phantomjs
-      sha256sum: '2110217cf1e2979fa49db82c2e9e7e7f7c787dfa1b885b342804c7958d613461'
+      sha256sum: '3846b7ea251f8a239e9b8727f05a7c65054ae45997ab06ee29ab7f333d4fda7a'
       mode: 0755
 
   - name: 'create directory'
