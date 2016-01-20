@@ -30,6 +30,7 @@
       dest: /usr/lib/x86_64-linux-gnu/libjpeg.so.8
       sha256sum: 'b9de29dab0f1585d1a49b557e88bf3842d84f3115f90cc2c0a370cbcb9058e16'
       mode: 0644
+    when: ansible_distribution == 'Debian'
 
   - name: 'create directory'
     file:
