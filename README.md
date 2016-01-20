@@ -18,7 +18,7 @@
   tasks:
   - name: 'download phantomjs'
     get_url:
-      url: https://github.com/vimagick/dockerfiles/raw/master/webkit/bin/phantomjs
+      url: https://github.com/vimagick/learning-casperjs/raw/master/bin/phantomjs-2.0.1
       dest: /usr/local/bin/phantomjs
       sha256sum: '2110217cf1e2979fa49db82c2e9e7e7f7c787dfa1b885b342804c7958d613461'
       mode: 0755
@@ -58,6 +58,8 @@
   - name: 'show version'
     debug: msg="{{ result.stdout_lines }}"
 ```
+
+> Official phantomjs binary can be download at <https://bitbucket.org/ariya/phantomjs/downloads>.
 
 ## 快速入门
 
