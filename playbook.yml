@@ -1,0 +1,87 @@
+---
+
+- name: install phantomjs and casperjs
+
+  hosts: vps
+
+  gather_facts: yes
+
+  tasks:
+
+  - name: 'download phantomjs'
+    get_url:
+      url: https://github.com/vimagick/learning-casperjs/raw/master/bin/phantomjs-2.1.1
+      dest: /usr/local/bin/phantomjs-2.1.1
+      sha256sum: '4f63e6055c323b8657f0a546d4dd36afda5cd4e961c375f31b48d506a7c4296f'
+      mode: 0755
+
+  - name: 'link phantomjs'
+    file:
+      src: /usr/local/bin/phantomjs-2.1.1
+      dest: /usr/local/bin/phantomjs
+      force: yes
+      state: link
+
+  - name: 'download libjpeg'
+    get_url:
+      url: https://github.com/vimagick/learning-casperjs/raw/master/lib/libjpeg.so.8
+      dest: /usr/lib/x86_64-linux-gnu/libjpeg.so.8
+      sha256sum: 'b9de29dab0f1585d1a49b557e88bf3842d84f3115f90cc2c0a370cbcb9058e16'
+      mode: 0644
+    when: "ansible_distribution == 'Debian'"
+
+  - name: 'remove old casperjs'
+    file:
+      path: /usr/local/casperjs
+      state: absent
+
+  - name: 'unarchive casperjs'
+    unarchive:
+      src: https://github.com/n1k0/casperjs/archive/master.zip
+      dest: /usr/local
+      copy: no
+
+  - name: 'rename casperjs'
+    command: mv /usr/local/casperjs-master /usr/local/casperjs
+    args:
+      creates: /usr/local/casperjs
+
+  - name: 'patch casperjs'
+    command: sed -i '/Warning PhantomJS v2.0 not yet released/s@^@//@' bootstrap.js
+    args:
+      chdir: /usr/local/casperjs/bin
+
+  - name: 'link casperjs'
+    file:
+      src: /usr/local/casperjs/bin/casperjs
+      dest: /usr/local/bin/casperjs
+      force: yes
+      state: link
+
+  - name: 'get versions'
+    shell: phantomjs --version && casperjs --version
+    register: versions
+
+  - name: 'show versions'
+    debug: msg="{{ versions.stdout_lines }}"
+
+  - name: 'create sample.js'
+    copy:
+      content: |
+        var casper = require('casper').create();
+        casper.start('http://casperjs.org/', function() {
+            this.echo(this.getTitle());
+        });
+        casper.thenOpen('http://phantomjs.org', function() {
+            this.echo(this.getTitle());
+        });
+        casper.run();
+      dest: /tmp/sample.js
+
+  - name: 'run sample.js'
+    command: casperjs /tmp/sample.js
+    register: result
+
+  - name: 'show result'
+    debug: msg="{{ result.stdout_lines }}"
+
