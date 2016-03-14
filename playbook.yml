@@ -4,10 +4,7 @@
 
   hosts: vps
 
-  gather_facts: yes
-
   tasks:
-
   - name: 'download phantomjs'
     get_url:
       url: https://github.com/vimagick/learning-casperjs/raw/master/bin/phantomjs-2.1.1
@@ -21,14 +18,6 @@
       dest: /usr/local/bin/phantomjs
       force: yes
       state: link
-
-  - name: 'download libjpeg'
-    get_url:
-      url: https://github.com/vimagick/learning-casperjs/raw/master/lib/libjpeg.so.8
-      dest: /usr/lib/x86_64-linux-gnu/libjpeg.so.8
-      sha256sum: 'b9de29dab0f1585d1a49b557e88bf3842d84f3115f90cc2c0a370cbcb9058e16'
-      mode: 0644
-    when: "ansible_distribution == 'Debian'"
 
   - name: 'remove old casperjs'
     file:
@@ -46,10 +35,10 @@
     args:
       creates: /usr/local/casperjs
 
-  - name: 'patch casperjs'
-    command: sed -i '/Warning PhantomJS v2.0 not yet released/s@^@//@' bootstrap.js
-    args:
-      chdir: /usr/local/casperjs/bin
+  - name: 'install dependency'
+    apt:
+      name: libfontconfig
+      state: present
 
   - name: 'link casperjs'
     file:
@@ -58,8 +47,18 @@
       force: yes
       state: link
 
+  - name: 'update source'
+    shell: 'curl -sL https://deb.nodesource.com/setup_4.x | bash -'
+    args:
+      creates: /etc/apt/sources.list.d/nodesource.list
+
+  - name: 'install nodejs'
+    apt:
+      name: nodejs
+      state: present
+
   - name: 'get versions'
-    shell: phantomjs --version && casperjs --version
+    shell: phantomjs --version && casperjs --version && node --version
     register: versions
 
   - name: 'show versions'
